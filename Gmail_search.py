@@ -1,8 +1,8 @@
 from selenium import webdriver
 from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.common.exceptions import TimeoutException
 
 # Initialize the WebDriver with the specified path
 driver = webdriver.Chrome()
@@ -38,12 +38,48 @@ next_button = WebDriverWait(driver, 10).until(
 )
 next_button.click()
 
-try:
-    # Wait for the page to load after login
-    WebDriverWait(driver, 30).until(EC.url_contains("inbox"))
-    print("Login successful!")
-except TimeoutException:
-    print("Login failed.")
+# Wait for the inbox page to load after successful login
+WebDriverWait(driver, 30).until(
+    EC.url_contains("inbox")
+)
+
+# Click on the "Compose" button to start composing a new email
+compose_button = WebDriverWait(driver, 10).until(
+    EC.element_to_be_clickable((By.XPATH, "//div[text()='Compose']"))
+)
+compose_button.click()
+
+# Wait for the "New Message" window to appear
+WebDriverWait(driver, 10).until(
+    EC.presence_of_element_located((By.XPATH, "//div[@role='dialog']"))
+)
+
+# Enter recipient's email address
+recipient_field = driver.find_element_by_name("to")
+recipient_field.send_keys("zaibiaqsa@gmail.com")
+
+# Enter subject for the email
+subject_field = driver.find_element_by_name("subjectbox")
+subject_field.send_keys("Test Email")
+
+# Enter email body/message
+message_body = driver.find_element_by_xpath("//div[@role='textbox']")
+message_body.send_keys("This is a test email.")
+
+# Click on the "Send" button to send the email
+send_button = driver.find_element_by_xpath("//div[contains(text()= 'Send')]")
+send_button.click()
+
+# Wait for the email to be sent successfully
+WebDriverWait(driver, 30).until(
+    EC.visibility_of_element_located((By.XPATH, "//span[contains(text()= 'Message sent')]"))
+)
+
+print("Email sent successfully!")
+
+# Close the "New Message" window
+close_button = driver.find_element_by_xpath("//img[@aria-label='Save & close']")
+close_button.click()
 
 # Close the browser
 driver.quit()

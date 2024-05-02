@@ -29,7 +29,7 @@ password_field = WebDriverWait(driver, 10).until(
 )
 
 # Enter your password
-password_field.send_keys("@NewOne29")
+password_field.send_keys("NewOne@29")
 
 # Click on the "Next" button to submit the password
 next_button = WebDriverWait(driver, 10).until(
@@ -38,7 +38,7 @@ next_button = WebDriverWait(driver, 10).until(
 next_button.click()
 
 # Wait for the page to load after login
-WebDriverWait(driver, 30).until(
+WebDriverWait(driver, 10).until(
     EC.url_contains("inbox")
 )
 
@@ -47,8 +47,6 @@ if "inbox" in driver.current_url:
     print("Login successful!")
 else:
     print("Login failed.")
-
-    
 
 
 # Close the browser
